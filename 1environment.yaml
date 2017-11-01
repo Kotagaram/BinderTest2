@@ -1,0 +1,39 @@
+name: py3
+channels:
+- defaults
+dependencies:
+- ca-certificates
+- cycler
+- freetype
+- icc_rt
+- icu
+- intel-openmp
+- jpeg
+- libpng
+- matplotlib
+- mkl
+- numpy
+- openssl
+- pandas
+- patsy
+- pip
+- pyparsing
+- pyqt
+- python
+- python-dateutil
+- pytz
+- qt
+- scipy
+- seaborn
+- setuptools
+- sip
+- six
+- sqlite
+- statsmodels
+- tornado
+- vc
+- vs2015_runtime
+- wheel
+- zlib
+prefix: C:\Users\Yemisi\Anaconda3\envs\py3
+
