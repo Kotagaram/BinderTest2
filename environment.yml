@@ -2,7 +2,6 @@ name: py3
 channels:
 - defaults
 dependencies:
-- beautifulsoup4=4.6.0=py36hd4cc5e8_1
 - ca-certificates=2017.08.26=h94faf87_0
 - cycler=0.10.0=py36h009560c_0
 - freetype=2.8=vc14h17c9bdf_0
