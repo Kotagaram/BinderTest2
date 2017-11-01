@@ -6,7 +6,6 @@ dependencies:
 - cycler
 - freetype
 - icu
-- intel-openmp
 - jpeg
 - libpng
 - matplotlib
