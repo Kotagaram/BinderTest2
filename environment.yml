@@ -5,7 +5,6 @@ dependencies:
 - ca-certificates
 - cycler
 - freetype
-- icc_rt
 - icu
 - intel-openmp
 - jpeg
