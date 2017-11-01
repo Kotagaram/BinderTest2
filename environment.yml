@@ -29,7 +29,6 @@ dependencies:
 - sqlite
 - statsmodels
 - tornado
-- vs2015_runtime
 - wheel
 - zlib
 prefix: C:\Users\Yemisi\Anaconda3\envs\py3
