@@ -1,0 +1,8 @@
+https://beta.mybinder.org/v2/gh/<org-name>/<repo-name>/<branch|commit|tag>?filepath=<path/to/notebook.ipynb>
+https://beta.mybinder.org/v2/gh/kunlegiwa/BinderTest2/master?filepath=Green_Tomato_Cars_Assignment.ipynb
+master
+Green_Tomato_Cars_Assignment.ipynb
+
+https://github.com/binder-examples/jupyter-extension
+
+https://github.com/kunlegiwa/BinderTest2/Green_Tomato_Cars_Assignment.ipynb
