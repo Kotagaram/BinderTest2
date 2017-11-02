@@ -26,6 +26,7 @@ dependencies:
 - setuptools
 - sip
 - six
+- scikit-learn
 - sqlite
 - statsmodels
 - tornado
