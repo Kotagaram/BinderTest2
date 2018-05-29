@@ -1,0 +1,274 @@
+GA SAMPLE
+SELECT one.hits.item.productSku AS ProductSku, ( sum_of_hit_number / total_hits ) AS avg_hit_number
+FROM (
+ SELECT hits.item.productSku, SUM(hits.hitNumber) AS sum_of_hit_number
+ FROM [‘GA Dataset Name’ ]
+ WHERE hits.item.productSku IS NOT NULL
+  AND totals.transactions>=1
+ GROUP BY hits.item.productSku ) AS ‘Alias_Name_1’
+JOIN (
+ SELECT hits.item.productSku, COUNT( fullVisitorId ) AS total_hits
+ FROM [‘GA Dataset Name’ ]
+ WHERE hits.item.productSku IS NOT NULL
+  AND totals.transactions>=1
+ GROUP BY hits.item.productSku ) AS ‘Alias_Name_2’
+ON Alias_Name_1.hits.item.productSku = Alias_Name_2.hits.item.productSku;
+
+ANDROID FUNDED NO WEBSITE ANON ID
+select count(*) as total_count, date(home_funded.timestamp) as funded_date, date(w.timestamp) as context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+from website.pages w inner join androidapp.home_funded 
+using (anonymous_id)
+where concat(w.anonymous_id, '-', cast(w.timestamp as string)) in (
+  select concat(anonymous_id, '-', cast(min(timestamp) as string))
+  from website.pages
+  group by anonymous_id
+)
+and (w.anonymous_id in (select user_id from androidapp.home_funded group by user_id))
+group by context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer, funded_date
+
+ANDROID FUNDED WITH WEBSITE ANON ID
+select count(*) as total_count, w.anonymous_id as website_anon_id, home_funded.anonymous_id as funded_anon_id,
+date(home_funded.timestamp) as funded_date, date(w.timestamp) as context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+from website.pages w left join androidapp.home_funded 
+using (anonymous_id)
+where concat(w.anonymous_id, '-', cast(w.timestamp as string)) in (
+  select concat(anonymous_id, '-', cast(min(timestamp) as string))
+  from website.pages
+  group by anonymous_id
+)
+and (w.anonymous_id in (select user_id from androidapp.home_funded group by user_id))
+group by funded_date, website_anon_id, funded_anon_id, context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+
+ANDROID FUNDED
+select count(*) as total_count, w.anonymous_id as website_anon_id, home_funded.anonymous_id as funded_anon_id,
+date(home_funded.timestamp) as funded_date, date(w.timestamp) as context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+from website.pages w left join androidapp.home_funded 
+using (anonymous_id)
+where concat(w.anonymous_id, '-', cast(w.timestamp as string)) in (
+  select concat(anonymous_id, '-', cast(min(timestamp) as string))
+  from website.pages
+  group by anonymous_id)
+
+and (w.anonymous_id in (select user_id from androidapp.home_funded group by user_id))
+group by funded_date, website_anon_id, funded_anon_id, context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+
+ANDROID SIGNUPS
+select count(*) as total_count, w.anonymous_id as website_anon_id, registration_accepted_ts_cs.anonymous_id as reg_anon_id,
+date(registration_accepted_ts_cs.timestamp) as signup_date, date(w.timestamp) as context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+from website.pages w left join androidapp.registration_accepted_ts_cs
+using (anonymous_id)
+where concat(w.anonymous_id, '-', cast(w.timestamp as string)) in (
+  select concat(anonymous_id, '-', cast(min(timestamp) as string))
+  from website.pages
+  group by anonymous_id
+)
+and (w.anonymous_id in (select user_id from androidapp.registration_accepted_ts_cs group by user_id))
+group by signup_date, reg_anon_id, website_anon_id, context_date, context_campaign_content, context_campaign_medium, context_campaign_name, context_campaign_source, context_page_referrer
+
+IOS_SIGNUPS
+select count(*) as total_count, w.anonymous_id as website_anon_id, registration_accepted_ts_cs.anonymous_id as reg_anon_id,
+date(registration_accepted_ts_cs.timestamp) as signup_date, date(w.timestamp) as context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+from website.pages w left join iosapp.registration_accepted_ts_cs
+using (anonymous_id)
+where concat(w.anonymous_id, '-', cast(w.timestamp as string)) in (
+  select concat(anonymous_id, '-', cast(min(timestamp) as string))
+  from website.pages
+  group by anonymous_id
+)
+and (w.anonymous_id in (select user_id from iosapp.registration_accepted_ts_cs group by user_id))
+group by signup_date, reg_anon_id, website_anon_id, context_date, context_campaign_content, 
+context_campaign_medium, context_campaign_name, context_campaign_source, context_page_referrer
+
+IOS FUNDED
+select count(*) as total_count, w.anonymous_id as website_anon_id, user_has_funds.anonymous_id as funded_anon_id,
+date(user_has_funds.timestamp) as funded_date, date(w.timestamp) as context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+from website.pages w left join iosapp.user_has_funds 
+using (anonymous_id)
+where concat(w.anonymous_id, '-', cast(w.timestamp as string)) in (
+  select concat(anonymous_id, '-', cast(min(timestamp) as string))
+  from website.pages
+  group by anonymous_id)
+
+and (w.anonymous_id in (select user_id from iosapp.user_has_funds group by user_id))
+group by funded_date, website_anon_id, funded_anon_id, context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+
+TIANA SUPPLIED
+select referrer, context_campaign_content, context_campaign_medium, context_campaign_name, context_campaign_source, count(*)
+from website.pages p
+left join androidapp.identifies a on (a.user_id = p.anonymous_id)
+left join iosapp.identifies i on (i.user_id = p.anonymous_id)
+where
+(a.user_id is not null or i.user_id is not null)
+and context_campaign_source is not null
+group by referrer, context_campaign_content, context_campaign_medium, context_campaign_name, context_campaign_source
+
+Kunle Test Query:
+select count(*) as total_count, w.anonymous_id as website_anon_id, h.user_id as funded_user_id,
+date(h.timestamp) as funded_date, date(w.timestamp) as context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+from website.pages w left join androidapp.home_funded h
+on (h.user_id = w.anonymous_id)
+where h.user_id is not null
+group by funded_date, website_anon_id, funded_user_id, context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+
+android funded
+select count(distinct h.user_id) as total_count, h.anonymous_id as funded_anon_id, date(h.timestamp) as funded_date, h.user_id as funded_user_id, 
+w.anonymous_id as website_anon_id, date(w.timestamp) as context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+from website.pages w left join androidapp.home_funded h 
+on (h.user_id = w.anonymous_id)
+where concat(w.anonymous_id, '-', cast(w.timestamp as string)) in (
+  select concat(anonymous_id, '-', cast(min(timestamp) as string))
+  from website.pages
+  group by anonymous_id)
+and (w.anonymous_id in (select user_id from androidapp.home_funded group by user_id))
+group by funded_date, website_anon_id, funded_anon_id, funded_user_id, context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+
+ios funded
+select count(distinct h.user_id) as total_count, h.anonymous_id as funded_anon_id, date(h.timestamp) as funded_date, 
+h.user_id as funded_user_id, w.anonymous_id as website_anon_id, 
+date(w.timestamp) as context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+from website.pages w left join iosapp.user_has_funds h 
+on (h.user_id = w.anonymous_id)
+where concat(w.anonymous_id, '-', cast(w.timestamp as string)) in (
+  select concat(anonymous_id, '-', cast(min(timestamp) as string))
+  from website.pages
+  group by anonymous_id)
+and (w.anonymous_id in (select user_id from iosapp.user_has_funds group by user_id))
+group by funded_date, website_anon_id, funded_anon_id, funded_user_id, context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+
+ios signup
+select count(distinct h.user_id) as total_count, h.anonymous_id as funded_anon_id, date(h.timestamp) as funded_date, 
+h.user_id as funded_user_id, w.anonymous_id as website_anon_id, 
+date(w.timestamp) as context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+from website.pages w left join  iosapp.registration_accepted_ts_cs h 
+on (h.user_id = w.anonymous_id)
+where concat(w.anonymous_id, '-', cast(w.timestamp as string)) in (
+  select concat(anonymous_id, '-', cast(min(timestamp) as string))
+  from website.pages
+  group by anonymous_id)
+and (w.anonymous_id in (select user_id from iosapp.registration_accepted_ts_cs group by user_id))
+group by funded_date, website_anon_id, funded_anon_id, funded_user_id, context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+
+GA account id 79740947
+profile id 135041215
+a79740947
+w131173500
+p135041215
+
+minmised date
+select h.anonymous_id as funded_anon_id, date(min(h.timestamp)) as funded_date, h.user_id as funded_user_id, 
+w.anonymous_id as website_anon_id, date(w.timestamp) as context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+from website.pages w left join androidapp.home_funded h 
+on (h.user_id = w.anonymous_id)
+where concat(w.anonymous_id, '-', cast(w.timestamp as string)) in (
+  select concat(anonymous_id, '-', cast(min(timestamp) as string))
+  from website.pages
+  group by anonymous_id)
+and (w.anonymous_id in (select user_id from androidapp.home_funded group by user_id))
+group by website_anon_id, funded_anon_id, funded_user_id, context_date, context_campaign_content, context_campaign_medium, 
+context_campaign_name, context_campaign_source, context_page_referrer
+
+select count(*) as total_count, h.user_id as funded_user_id, h.anonymous_id as funded_anon_id,
+date(min(h.timestamp)) as funded_date
+from androidapp.home_funded h
+where h.anonymous_id not in (select distinct anonymous_id from website.pages)
+group by funded_user_id, funded_anon_id
+
+returns funded from website
+select count(*) as total_count, h.user_id as funded_user_id, h.anonymous_id as funded_anon_id,
+date(min(h.timestamp)) as funded_date
+from androidapp.home_funded h
+where h.user_id in (select distinct anonymous_id from website.pages)
+group by funded_user_id, funded_anon_id
+
+select count(*) as total_count, h.user_id as funded_user_id, h.anonymous_id as funded_anon_id,
+date(min(h.timestamp)) as funded_date
+from androidapp.home_funded h
+where h.user_id not in (select distinct anonymous_id from website.pages)
+group by funded_user_id, funded_anon_id
+
+
+select distinct h.user_id as funded_user_id, h.is_production as production,
+h.bundle_id, date(min(h.timestamp)) as funded_date
+from iosapp.user_has_funds h
+where h.user_id not in (select distinct anonymous_id from website.pages) and h.is_production is true
+and h.bundle_id not like '%test%' and date(h.timestamp) >= '2017-05-12' and date(h.timestamp) <= '2017-05-18'
+group by funded_user_Id, production, bundle_id order by funded_user_id asc
+
+select distinct h.user_id as funded_user_id, h.is_production as production,
+h.bundle_id, date(min(h.timestamp)) as funded_date
+from iosapp.user_has_funds h
+where h.user_id not in (select distinct anonymous_id from website.pages) and h.is_production is true
+and h.bundle_id not like '%test%' 
+group by funded_user_Id, production, bundle_id order by funded_user_id asc
+
+"select distinct h.user_id as funded_user_id, h.is_production as production, " +
+    "h.bundle_id, date(min(h.timestamp)) as funded_date " +
+    "from iosapp.user_has_funds h " +
+    "where h.user_id not in (select distinct anonymous_id from website.pages) and h.is_production is true " +
+    "and h.bundle_id not like '%test%' " +
+    "group by funded_user_Id, production, bundle_id order by funded_user_id asc",
+    "iOS_Funded_Not_Website"
+
+old
+//Test changes made by Kunle, Android_Installed
+  getBigQueryComplexResult(
+    "select count (distinct h.anonymous_id) as installed_user_id " +
+    "from androidapp.application_installed h " +
+    "where h.context_app_name = 'Tide' " +
+    "and h.timestamp >= '" + startDate + "' and h.timestamp <= '" + endDate +"' ",
+    "Android_Installed"
+    );
+  
+  //Test changes made by Kunle, iOS_Installed
+  getBigQueryComplexResult(
+    "select count (distinct h.anonymous_id) as installed_user_id " +
+    "from iosapp.application_installed h " +
+    "where h.context_app_name = 'Tide' " +
+    "and h.timestamp >= '" + startDate + "' and h.timestamp <= '" + endDate +"' ",
+    "iOS_Installed"
+    );
+
+
+// the name of the sheet within your document
+var sheetName = "Sheet1";
+// the name of the Instagram account you want the follower count for
+var instagramAccountName = "kingandmcgaw";
+
+function insertFollowerCount() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(this.sheetName);
+  sheet.appendRow([Utilities.formatDate(new Date(), "GMT", "yyyy-MM-dd"), getInstagramFollowerCount(this.instagramAccountName)]);  
+ };
+
+function getInstagramFollowerCount(username) {
+  var url = "https://www.instagram.com/" + username + "/?__a=1";
+  var response = UrlFetchApp.fetch(url).getContentText();
+  return JSON.parse(response).user.followed_by.count;
+}
+
+=REGEXMATCH(A1;"(?i)Google|google|Facebook|FB")
+
+4428 2442 7138
+
+MC0011432861
+442824427138 uid
+bella2011
